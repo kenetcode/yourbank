@@ -1,0 +1,57 @@
+{
+  "type": "object",
+  "properties": {
+    "nombre_producto": {
+      "type": "string",
+      "description": "Nombre comercial del producto financiero"
+    },
+    "banco": {
+      "type": "string",
+      "description": "Nombre del banco emisor"
+    },
+    "tipo_producto": {
+      "type": "string",
+      "enum": [
+        "credit_card",
+        "debit_card",
+        "loan",
+        "savings",
+        "insurance"
+      ],
+      "description": "Tipo de producto financiero"
+    },
+    "anualidad": {
+      "type": ["number", "null"],
+      "description": "Costo anual de membresía en USD, 0 si es gratis"
+    },
+    "tasa_interes": {
+      "type": ["number", "null"],
+      "description": "Tasa de interés anual en porcentaje"
+    },
+    "requisitos": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Requisitos para solicitar el producto"
+    },
+    "beneficios": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Beneficios y ventajas del producto"
+    },
+    "promociones": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "comercio": { "type": "string" },
+          "descuento_pct": { "type": ["number", "null"] },
+          "tipo_tarjeta": { "type": "string" },
+          "vigencia": { "type": "string" },
+          "descripcion": { "type": "string" }
+        }
+      },
+      "description": "Promociones y descuentos asociados"
+    }
+  },
+  "required": ["nombre_producto", "banco", "tipo_producto"]
+}

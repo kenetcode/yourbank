@@ -2,7 +2,8 @@ import uuid
 from datetime import datetime, timezone
 
 from pydantic import EmailStr
-from sqlalchemy import DateTime
+from sqlalchemy import Column, DateTime
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlmodel import Field, Relationship, SQLModel
 
 
@@ -40,6 +41,13 @@ class UserUpdateMe(SQLModel):
     email: EmailStr | None = Field(default=None, max_length=255)
 
 
+class FinancialProfileUpdate(SQLModel):
+    monthly_income: float | None = None
+    goal: str | None = Field(default=None, max_length=255)
+    has_credit_history: bool | None = None
+    employment: str | None = Field(default=None, max_length=32)
+
+
 class UpdatePassword(SQLModel):
     current_password: str = Field(min_length=8, max_length=128)
     new_password: str = Field(min_length=8, max_length=128)
@@ -49,6 +57,7 @@ class UpdatePassword(SQLModel):
 class User(UserBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     hashed_password: str
+    financial_profile: dict | None = Field(default=None, sa_column=Column(JSONB))
     created_at: datetime | None = Field(
         default_factory=get_datetime_utc,
         sa_type=DateTime(timezone=True),  # type: ignore
@@ -127,3 +136,6 @@ class TokenPayload(SQLModel):
 class NewPassword(SQLModel):
     token: str
     new_password: str = Field(min_length=8, max_length=128)
+
+
+from app.banking_models import Bank, Product, ProductUrl, ScrapeJob  # noqa: E402, F401

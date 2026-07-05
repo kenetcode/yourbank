@@ -9,6 +9,33 @@ export type Body_login_login_access_token = {
     client_secret?: (string | null);
 };
 
+export type ChatMessage = {
+    role: 'user' | 'assistant';
+    content: string;
+};
+
+export type role = 'user' | 'assistant';
+
+export type ChatRequest = {
+    message: string;
+    profile?: (UserProfileInput | null);
+    history?: Array<ChatMessage>;
+};
+
+export type ChatResponse = {
+    reply: string;
+    products_used: Array<(string)>;
+    match_scores?: Array<MatchResultItem>;
+    disclaimer: string;
+};
+
+export type FinancialProfileUpdate = {
+    monthly_income?: (number | null);
+    goal?: (string | null);
+    has_credit_history?: (boolean | null);
+    employment?: (string | null);
+};
+
 export type HTTPValidationError = {
     detail?: Array<ValidationError>;
 };
@@ -36,6 +63,26 @@ export type ItemUpdate = {
     description?: (string | null);
 };
 
+export type MatchRequest = {
+    profile: UserProfileInput;
+    product_types?: (Array<('credit_card' | 'debit_card' | 'loan' | 'savings' | 'insurance')> | null);
+    limit?: number;
+};
+
+export type MatchResponse = {
+    results: Array<MatchResultItem>;
+    disclaimer: string;
+};
+
+export type MatchResultItem = {
+    product_id: string;
+    nombre_producto: string;
+    banco: string;
+    tipo_producto: string;
+    score: number;
+    reasons: Array<(string)>;
+};
+
 export type Message = {
     message: string;
 };
@@ -50,6 +97,27 @@ export type PrivateUserCreate = {
     password: string;
     full_name: string;
     is_verified?: boolean;
+};
+
+export type ProductPublic = {
+    id: string;
+    nombre_producto: string;
+    banco: string;
+    tipo_producto: 'credit_card' | 'debit_card' | 'loan' | 'savings' | 'insurance';
+    source_url?: (string | null);
+    normalized: {
+        [key: string]: unknown;
+    };
+    last_updated?: (string | null);
+    disclaimer: string;
+};
+
+export type tipo_producto = 'credit_card' | 'debit_card' | 'loan' | 'savings' | 'insurance';
+
+export type ProductsPublic = {
+    data: Array<ProductPublic>;
+    count: number;
+    disclaimer: string;
 };
 
 export type Token = {
@@ -68,6 +136,13 @@ export type UserCreate = {
     is_superuser?: boolean;
     full_name?: (string | null);
     password: string;
+};
+
+export type UserProfileInput = {
+    monthly_income?: (number | null);
+    goal?: (string | null);
+    has_credit_history?: (boolean | null);
+    employment?: ('formal' | 'informal' | null);
 };
 
 export type UserPublic = {
@@ -108,6 +183,35 @@ export type ValidationError = {
     msg: string;
     type: string;
 };
+
+export type AdminIngestRunDiscoverData = {
+    bankSlug: string;
+};
+
+export type AdminIngestRunDiscoverResponse = ({
+    [key: string]: unknown;
+});
+
+export type AdminIngestRunExtractData = {
+    bankSlug: string;
+    limit?: number;
+};
+
+export type AdminIngestRunExtractResponse = ({
+    [key: string]: unknown;
+});
+
+export type AdvisorAdvisorMatchData = {
+    requestBody: MatchRequest;
+};
+
+export type AdvisorAdvisorMatchResponse = (MatchResponse);
+
+export type AdvisorAdvisorChatData = {
+    requestBody: ChatRequest;
+};
+
+export type AdvisorAdvisorChatResponse = (ChatResponse);
 
 export type ItemsReadItemsData = {
     limit?: number;
@@ -173,6 +277,21 @@ export type PrivateCreateUserData = {
 
 export type PrivateCreateUserResponse = (UserPublic);
 
+export type ProductsListProductsData = {
+    banco?: (string | null);
+    limit?: number;
+    skip?: number;
+    tipoProducto?: ('credit_card' | 'debit_card' | 'loan' | 'savings' | 'insurance' | null);
+};
+
+export type ProductsListProductsResponse = (ProductsPublic);
+
+export type ProductsGetProductData = {
+    productId: string;
+};
+
+export type ProductsGetProductResponse = (ProductPublic);
+
 export type UsersReadUsersData = {
     limit?: number;
     skip?: number;
@@ -195,6 +314,12 @@ export type UsersUpdateUserMeData = {
 };
 
 export type UsersUpdateUserMeResponse = (UserPublic);
+
+export type UsersUpdateFinancialProfileMeData = {
+    requestBody: FinancialProfileUpdate;
+};
+
+export type UsersUpdateFinancialProfileMeResponse = (Message);
 
 export type UsersUpdatePasswordMeData = {
     requestBody: UpdatePassword;
@@ -233,4 +358,8 @@ export type UtilsTestEmailData = {
 
 export type UtilsTestEmailResponse = (Message);
 
-export type UtilsHealthCheckResponse = (boolean);
+export type UtilsHealthCheckResponse = ({
+    [key: string]: (boolean | string);
+});
+
+export type UtilsGetDisclaimerResponse = (Message);
