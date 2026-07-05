@@ -50,15 +50,26 @@ class Settings(BaseSettings):
 
     PROJECT_NAME: str
     SENTRY_DSN: HttpUrl | None = None
-    POSTGRES_SERVER: str
+    POSTGRES_URL: str | None = None
+    POSTGRES_SERVER: str | None = None
     POSTGRES_PORT: int = 5432
-    POSTGRES_USER: str
+    POSTGRES_USER: str | None = None
     POSTGRES_PASSWORD: str = ""
-    POSTGRES_DB: str = ""
+    POSTGRES_DB: str | None = None
+    POSTGRES_SSL_MODE: str | None = None
 
     @computed_field  # type: ignore[prop-decorator]
     @property
-    def SQLALCHEMY_DATABASE_URI(self) -> PostgresDsn:
+    def SQLALCHEMY_DATABASE_URI(self) -> str | PostgresDsn:
+        if self.POSTGRES_URL:
+            return self.POSTGRES_URL.replace(
+                "postgresql://", "postgresql+psycopg://", 1
+            )
+        if not self.POSTGRES_SERVER or not self.POSTGRES_USER or not self.POSTGRES_DB:
+            raise ValueError("POSTGRES_URL or split PostgreSQL settings must be set")
+        query = (
+            f"sslmode={self.POSTGRES_SSL_MODE}" if self.POSTGRES_SSL_MODE else None
+        )
         return PostgresDsn.build(
             scheme="postgresql+psycopg",
             username=self.POSTGRES_USER,
@@ -66,6 +77,7 @@ class Settings(BaseSettings):
             host=self.POSTGRES_SERVER,
             port=self.POSTGRES_PORT,
             path=self.POSTGRES_DB,
+            query=query,
         )
 
     SMTP_TLS: bool = True
