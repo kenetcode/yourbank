@@ -16,8 +16,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
-import { Route as AuthenticatedPanelRouteImport } from './routes/_authenticated/panel'
-import { Route as AuthenticatedItemsRouteImport } from './routes/_authenticated/items'
+import { Route as AuthenticatedFavoritosRouteImport } from './routes/_authenticated/favoritos'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 
 const SignupRoute = SignupRouteImport.update({
@@ -54,14 +53,9 @@ const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedPanelRoute = AuthenticatedPanelRouteImport.update({
-  id: '/panel',
-  path: '/panel',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedItemsRoute = AuthenticatedItemsRouteImport.update({
-  id: '/items',
-  path: '/items',
+const AuthenticatedFavoritosRoute = AuthenticatedFavoritosRouteImport.update({
+  id: '/favoritos',
+  path: '/favoritos',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
@@ -77,8 +71,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/admin': typeof AuthenticatedAdminRoute
-  '/items': typeof AuthenticatedItemsRoute
-  '/panel': typeof AuthenticatedPanelRoute
+  '/favoritos': typeof AuthenticatedFavoritosRoute
   '/settings': typeof AuthenticatedSettingsRoute
 }
 export interface FileRoutesByTo {
@@ -88,8 +81,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/admin': typeof AuthenticatedAdminRoute
-  '/items': typeof AuthenticatedItemsRoute
-  '/panel': typeof AuthenticatedPanelRoute
+  '/favoritos': typeof AuthenticatedFavoritosRoute
   '/settings': typeof AuthenticatedSettingsRoute
 }
 export interface FileRoutesById {
@@ -101,8 +93,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
-  '/_authenticated/items': typeof AuthenticatedItemsRoute
-  '/_authenticated/panel': typeof AuthenticatedPanelRoute
+  '/_authenticated/favoritos': typeof AuthenticatedFavoritosRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
 }
 export interface FileRouteTypes {
@@ -114,8 +105,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/admin'
-    | '/items'
-    | '/panel'
+    | '/favoritos'
     | '/settings'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -125,8 +115,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/admin'
-    | '/items'
-    | '/panel'
+    | '/favoritos'
     | '/settings'
   id:
     | '__root__'
@@ -137,8 +126,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/_authenticated/admin'
-    | '/_authenticated/items'
-    | '/_authenticated/panel'
+    | '/_authenticated/favoritos'
     | '/_authenticated/settings'
   fileRoutesById: FileRoutesById
 }
@@ -202,18 +190,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/panel': {
-      id: '/_authenticated/panel'
-      path: '/panel'
-      fullPath: '/panel'
-      preLoaderRoute: typeof AuthenticatedPanelRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/items': {
-      id: '/_authenticated/items'
-      path: '/items'
-      fullPath: '/items'
-      preLoaderRoute: typeof AuthenticatedItemsRouteImport
+    '/_authenticated/favoritos': {
+      id: '/_authenticated/favoritos'
+      path: '/favoritos'
+      fullPath: '/favoritos'
+      preLoaderRoute: typeof AuthenticatedFavoritosRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/admin': {
@@ -228,15 +209,13 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
-  AuthenticatedItemsRoute: typeof AuthenticatedItemsRoute
-  AuthenticatedPanelRoute: typeof AuthenticatedPanelRoute
+  AuthenticatedFavoritosRoute: typeof AuthenticatedFavoritosRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
-  AuthenticatedItemsRoute: AuthenticatedItemsRoute,
-  AuthenticatedPanelRoute: AuthenticatedPanelRoute,
+  AuthenticatedFavoritosRoute: AuthenticatedFavoritosRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
 }
 
