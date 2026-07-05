@@ -21,10 +21,10 @@ WORKDIR /app/
 ENV PATH="/app/.venv/bin:$PATH"
 
 # Install dependencies
-# Ref: https://docs.astral.sh/uv/guides/integration/docker/#intermediate-layers
-RUN --mount=type=bind,source=uv.lock,target=uv.lock \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --frozen --no-install-workspace --package app
+# Note: plain COPY (not --mount=type=bind) is used because Railway's builder
+# only supports --mount=type=cache, not --mount=type=bind.
+COPY uv.lock pyproject.toml ./
+RUN uv sync --frozen --no-install-workspace --package app
 
 COPY ./backend/scripts /app/backend/scripts
 
@@ -33,10 +33,7 @@ COPY ./backend/pyproject.toml ./backend/alembic.ini /app/backend/
 COPY ./backend/app /app/backend/app
 
 # Sync the project
-# Ref: https://docs.astral.sh/uv/guides/integration/docker/#intermediate-layers
-RUN --mount=type=bind,source=uv.lock,target=uv.lock \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --frozen --package app
+RUN uv sync --frozen --package app
 
 WORKDIR /app/backend/
 
