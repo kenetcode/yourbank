@@ -4,6 +4,7 @@ import {
   Link as RouterLink,
   redirect,
 } from "@tanstack/react-router"
+import { ArrowLeft } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
@@ -44,7 +45,7 @@ export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
       {
-        title: "Log In - FastAPI Cloud",
+        title: "Iniciar sesión - YourBank",
       },
     ],
   }),
@@ -74,6 +75,14 @@ function Login() {
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col gap-6"
         >
+          <RouterLink
+            to="/"
+            className="inline-flex w-fit items-center gap-1 text-sm text-muted-foreground hover:text-primary hover:underline"
+          >
+            <ArrowLeft className="size-3.5" />
+            Volver al dashboard
+          </RouterLink>
+
           <div className="flex flex-col items-center gap-2 text-center">
             <h1 className="text-2xl font-bold">Login to your account</h1>
           </div>

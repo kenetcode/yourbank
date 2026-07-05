@@ -22,3 +22,16 @@ class ProductsPublic(BaseModel):
     data: list[ProductPublic]
     count: int
     disclaimer: str
+
+
+class ProductUpdate(BaseModel):
+    """Campos editables de un producto (admin)."""
+
+    nombre_producto: str | None = None
+    banco: str | None = None
+    tipo_producto: ProductType | None = None
+    anualidad: float | None = None
+    tasa_interes: float | None = None
+    requisitos: list[str] | None = None
+    beneficios: list[str] | None = None
+    promociones: list[dict] | None = None

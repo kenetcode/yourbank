@@ -1,4 +1,4 @@
-import { Heart, LayoutDashboard, Users } from "lucide-react"
+import { CreditCard, Heart, LayoutDashboard, Sparkles, Users } from "lucide-react"
 
 import { SidebarAppearance } from "@/components/Common/Appearance"
 import { Logo } from "@/components/Common/Logo"
@@ -15,13 +15,19 @@ import { User } from "./User"
 const baseItems: Item[] = [
   { icon: LayoutDashboard, title: "Dashboard", path: "/" },
   { icon: Heart, title: "Favoritos", path: "/favoritos" },
+  { icon: Sparkles, title: "Asesor IA", action: "open-advisor" },
+]
+
+const adminItems: Item[] = [
+  { icon: Users, title: "Usuarios", path: "/admin" },
+  { icon: CreditCard, title: "Productos", path: "/admin/productos" },
 ]
 
 export function AppSidebar() {
   const { user: currentUser } = useAuth()
 
   const items = currentUser?.is_superuser
-    ? [...baseItems, { icon: Users, title: "Admin", path: "/admin" }]
+    ? [...baseItems, ...adminItems]
     : baseItems
 
   return (

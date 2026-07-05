@@ -1,5 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
-import { createFileRoute, redirect } from "@tanstack/react-router"
+import { createFileRoute, Link, redirect } from "@tanstack/react-router"
+import { CreditCard } from "lucide-react"
 import { Suspense } from "react"
 
 import { type UserPublic, UsersService } from "@/client"
@@ -7,6 +8,7 @@ import AddUser from "@/components/Admin/AddUser"
 import { columns, type UserTableData } from "@/components/Admin/columns"
 import { DataTable } from "@/components/Common/DataTable"
 import PendingUsers from "@/components/Pending/PendingUsers"
+import { Button } from "@/components/ui/button"
 import useAuth from "@/hooks/useAuth"
 
 function getUsersQueryOptions() {
@@ -60,12 +62,20 @@ function Admin() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Users</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Usuarios</h1>
           <p className="text-muted-foreground">
-            Manage user accounts and permissions
+            Administra cuentas y permisos de la plataforma
           </p>
         </div>
-        <AddUser />
+        <div className="flex gap-2">
+          <Button asChild variant="outline" size="sm">
+            <Link to="/admin/productos">
+              <CreditCard className="size-4" />
+              Productos
+            </Link>
+          </Button>
+          <AddUser />
+        </div>
       </div>
       <UsersTable />
     </div>

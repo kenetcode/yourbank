@@ -1,15 +1,17 @@
 import { useQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
-import { AlertTriangle } from "lucide-react"
+import { AlertTriangle, X } from "lucide-react"
 import { useMemo, useState } from "react"
 
 import { ProductsService } from "@/client"
 import { Footer } from "@/components/Common/Footer"
 import { DashboardHeader } from "@/components/Dashboard/DashboardHeader"
+import { DisclaimerBanner } from "@/components/Dashboard/DisclaimerBanner"
 import { EmptyProducts } from "@/components/Dashboard/EmptyProducts"
 import { PendingProductGrid } from "@/components/Dashboard/PendingProductGrid"
 import { ProductCard } from "@/components/Dashboard/ProductCard"
 import { ProductFilters } from "@/components/Dashboard/ProductFilters"
+import { bancoKey } from "@/lib/products"
 
 function getProductsQueryOptions() {
   return {
@@ -18,8 +20,15 @@ function getProductsQueryOptions() {
   }
 }
 
+interface DashboardSearch {
+  q?: string
+}
+
 export const Route = createFileRoute("/")({
   component: PublicDashboard,
+  validateSearch: (search: Record<string, unknown>): DashboardSearch => ({
+    q: typeof search.q === "string" && search.q ? search.q : undefined,
+  }),
   head: () => ({
     meta: [
       {
@@ -29,31 +38,62 @@ export const Route = createFileRoute("/")({
   }),
 })
 
+function normalizeText(value: string): string {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+}
+
 function PublicDashboard() {
   const { data, isLoading, isError } = useQuery(getProductsQueryOptions())
+  const { q } = Route.useSearch()
+  const navigate = Route.useNavigate()
   const [selectedBanco, setSelectedBanco] = useState<string | null>(null)
   const [selectedTipo, setSelectedTipo] = useState<string | null>(null)
 
+  const clearSearch = () => {
+    navigate({ search: {}, replace: true })
+  }
+
   const products = useMemo(() => data?.data ?? [], [data])
 
-  const bancos = useMemo(
-    () => Array.from(new Set(products.map((product) => product.banco))).sort(),
-    [products],
-  )
+  const bancos = useMemo(() => {
+    const byKey = new Map<string, string>()
+    for (const product of products) {
+      const key = bancoKey(product.banco)
+      if (!byKey.has(key)) {
+        byKey.set(key, product.banco)
+      }
+    }
+    return Array.from(byKey.values()).sort()
+  }, [products])
 
   const filteredProducts = useMemo(
     () =>
       products.filter((product) => {
-        if (selectedBanco && product.banco !== selectedBanco) return false
+        if (
+          selectedBanco &&
+          bancoKey(product.banco) !== bancoKey(selectedBanco)
+        )
+          return false
         if (selectedTipo && product.tipo_producto !== selectedTipo) return false
+        if (q) {
+          const query = normalizeText(q)
+          const haystack = normalizeText(
+            `${product.nombre_producto} ${product.banco}`,
+          )
+          if (!haystack.includes(query)) return false
+        }
         return true
       }),
-    [products, selectedBanco, selectedTipo],
+    [products, selectedBanco, selectedTipo, q],
   )
 
   return (
     <div className="flex min-h-svh flex-col">
       <DashboardHeader />
+      <DisclaimerBanner />
 
       <main className="flex-1">
         <section className="border-b bg-muted/30">
@@ -70,6 +110,22 @@ function PublicDashboard() {
         </section>
 
         <section className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-8 md:px-8">
+          {q && (
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">
+                Mostrando resultados para:
+              </span>
+              <button
+                type="button"
+                onClick={clearSearch}
+                className="inline-flex items-center gap-1.5 rounded-full border bg-muted/50 px-3 py-1 text-sm font-medium transition-colors hover:bg-muted"
+              >
+                {q}
+                <X className="size-3.5 text-muted-foreground" />
+              </button>
+            </div>
+          )}
+
           {!isLoading && !isError && bancos.length > 0 && (
             <ProductFilters
               bancos={bancos}
@@ -98,7 +154,7 @@ function PublicDashboard() {
           ) : filteredProducts.length === 0 ? (
             <EmptyProducts />
           ) : (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
               {filteredProducts.map((product, index) => (
                 <ProductCard
                   key={product.id}

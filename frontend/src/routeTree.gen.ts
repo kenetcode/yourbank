@@ -13,11 +13,13 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RecoverPasswordRouteImport } from './routes/recover-password'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as AsesorRouteImport } from './routes/asesor'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedFavoritosRouteImport } from './routes/_authenticated/favoritos'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedAdminProductosRouteImport } from './routes/_authenticated/admin/productos'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -37,6 +39,11 @@ const RecoverPasswordRoute = RecoverPasswordRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AsesorRoute = AsesorRouteImport.update({
+  id: '/asesor',
+  path: '/asesor',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
@@ -63,43 +70,56 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedAdminProductosRoute =
+  AuthenticatedAdminProductosRouteImport.update({
+    id: '/productos',
+    path: '/productos',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/asesor': typeof AsesorRoute
   '/login': typeof LoginRoute
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
-  '/admin': typeof AuthenticatedAdminRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/favoritos': typeof AuthenticatedFavoritosRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/admin/productos': typeof AuthenticatedAdminProductosRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/asesor': typeof AsesorRoute
   '/login': typeof LoginRoute
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
-  '/admin': typeof AuthenticatedAdminRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/favoritos': typeof AuthenticatedFavoritosRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/admin/productos': typeof AuthenticatedAdminProductosRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/asesor': typeof AsesorRoute
   '/login': typeof LoginRoute
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
-  '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/favoritos': typeof AuthenticatedFavoritosRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/admin/productos': typeof AuthenticatedAdminProductosRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/asesor'
     | '/login'
     | '/recover-password'
     | '/reset-password'
@@ -107,9 +127,11 @@ export interface FileRouteTypes {
     | '/admin'
     | '/favoritos'
     | '/settings'
+    | '/admin/productos'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/asesor'
     | '/login'
     | '/recover-password'
     | '/reset-password'
@@ -117,10 +139,12 @@ export interface FileRouteTypes {
     | '/admin'
     | '/favoritos'
     | '/settings'
+    | '/admin/productos'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/asesor'
     | '/login'
     | '/recover-password'
     | '/reset-password'
@@ -128,11 +152,13 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/favoritos'
     | '/_authenticated/settings'
+    | '/_authenticated/admin/productos'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  AsesorRoute: typeof AsesorRoute
   LoginRoute: typeof LoginRoute
   RecoverPasswordRoute: typeof RecoverPasswordRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
@@ -167,6 +193,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/asesor': {
+      id: '/asesor'
+      path: '/asesor'
+      fullPath: '/asesor'
+      preLoaderRoute: typeof AsesorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -204,17 +237,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin/productos': {
+      id: '/_authenticated/admin/productos'
+      path: '/productos'
+      fullPath: '/admin/productos'
+      preLoaderRoute: typeof AuthenticatedAdminProductosRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
   }
 }
 
+interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminProductosRoute: typeof AuthenticatedAdminProductosRoute
+}
+
+const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminProductosRoute: AuthenticatedAdminProductosRoute,
+}
+
+const AuthenticatedAdminRouteWithChildren =
+  AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
+
 interface AuthenticatedRouteChildren {
-  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedFavoritosRoute: typeof AuthenticatedFavoritosRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
-  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
   AuthenticatedFavoritosRoute: AuthenticatedFavoritosRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
 }
@@ -226,6 +277,7 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
+  AsesorRoute: AsesorRoute,
   LoginRoute: LoginRoute,
   RecoverPasswordRoute: RecoverPasswordRoute,
   ResetPasswordRoute: ResetPasswordRoute,

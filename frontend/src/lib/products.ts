@@ -97,6 +97,25 @@ export const TIPO_PRODUCTO_OPTIONS = Object.entries(TIPO_PRODUCTO_LABELS).map(
   ([value, label]) => ({ value, label }),
 )
 
+/** Tipos ocultos temporalmente de los filtros del dashboard (aún no hay productos). */
+const HIDDEN_FILTER_TIPOS = new Set(["loan", "savings", "insurance"])
+
+export const FILTERABLE_TIPO_PRODUCTO_OPTIONS = TIPO_PRODUCTO_OPTIONS.filter(
+  (option) => !HIDDEN_FILTER_TIPOS.has(option.value),
+)
+
+/**
+ * Clave de agrupación para nombres de banco que llegan escritos distinto
+ * desde cada scrape (ej. "Bancoagrícola" vs "Banco Agrícola").
+ */
+export function bancoKey(banco: string): string {
+  return banco
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, "")
+    .toLowerCase()
+}
+
 export function formatCurrency(value: number): string {
   return new Intl.NumberFormat("es-SV", {
     style: "currency",

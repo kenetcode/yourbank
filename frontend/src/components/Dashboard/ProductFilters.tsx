@@ -1,7 +1,7 @@
 import { Landmark, Tag } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { TIPO_PRODUCTO_OPTIONS } from "@/lib/products"
+import { FILTERABLE_TIPO_PRODUCTO_OPTIONS } from "@/lib/products"
 
 interface ProductFiltersProps {
   bancos: string[]
@@ -78,7 +78,7 @@ export function ProductFilters({
           >
             Todos
           </PillButton>
-          {TIPO_PRODUCTO_OPTIONS.map((option) => (
+          {FILTERABLE_TIPO_PRODUCTO_OPTIONS.map((option) => (
             <PillButton
               key={option.value}
               active={selectedTipo === option.value}

@@ -19,11 +19,12 @@ const useAuth = () => {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const { showErrorToast } = useCustomToast()
+  const loggedIn = isLoggedIn()
 
   const { data: user } = useQuery<UserPublic | null, Error>({
     queryKey: ["currentUser"],
     queryFn: UsersService.readUserMe,
-    enabled: isLoggedIn(),
+    enabled: loggedIn,
   })
 
   const signUpMutation = useMutation({
@@ -48,6 +49,7 @@ const useAuth = () => {
   const loginMutation = useMutation({
     mutationFn: login,
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["currentUser"] })
       navigate({ to: "/" })
     },
     onError: handleError.bind(showErrorToast),
@@ -55,6 +57,7 @@ const useAuth = () => {
 
   const logout = () => {
     localStorage.removeItem("access_token")
+    queryClient.removeQueries({ queryKey: ["currentUser"] })
     navigate({ to: "/login" })
   }
 
@@ -62,7 +65,7 @@ const useAuth = () => {
     signUpMutation,
     loginMutation,
     logout,
-    user,
+    user: loggedIn ? (user ?? null) : null,
   }
 }
 

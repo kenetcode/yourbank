@@ -5,7 +5,7 @@ from typing import Any
 
 from sqlmodel import Session, col, select
 
-from app.banking_models import Product, ProductUrl
+from app.banking_models import Product, ProductUrl, UserFavorite, get_datetime_utc
 from app.schemas.products import ProductType
 
 
@@ -76,3 +76,60 @@ class ProductRepository:
     @staticmethod
     def normalized_dict(product: Product) -> dict[str, Any]:
         return product.normalized or {}
+
+    def update_product(
+        self,
+        product_id: uuid.UUID,
+        *,
+        nombre_producto: str | None = None,
+        banco: str | None = None,
+        tipo_producto: ProductType | None = None,
+        anualidad: float | None = None,
+        tasa_interes: float | None = None,
+        requisitos: list[str] | None = None,
+        beneficios: list[str] | None = None,
+        promociones: list[dict[str, Any]] | None = None,
+    ) -> Product | None:
+        product = self.session.get(Product, product_id)
+        if not product:
+            return None
+
+        normalized = dict(product.normalized or {})
+        if nombre_producto is not None:
+            product.nombre_producto = nombre_producto
+        if banco is not None:
+            product.banco = banco
+        if tipo_producto is not None:
+            product.tipo_producto = tipo_producto
+        if anualidad is not None:
+            normalized["anualidad"] = anualidad
+        if tasa_interes is not None:
+            normalized["tasa_interes"] = tasa_interes
+        if requisitos is not None:
+            normalized["requisitos"] = requisitos
+        if beneficios is not None:
+            normalized["beneficios"] = beneficios
+        if promociones is not None:
+            normalized["promociones"] = promociones
+
+        product.normalized = normalized
+        product.updated_at = get_datetime_utc()
+        self.session.add(product)
+        self.session.commit()
+        self.session.refresh(product)
+        return product
+
+    def delete_product(self, product_id: uuid.UUID) -> bool:
+        product = self.session.get(Product, product_id)
+        if not product:
+            return False
+
+        favorites = self.session.exec(
+            select(UserFavorite).where(UserFavorite.product_id == product_id)
+        ).all()
+        for favorite in favorites:
+            self.session.delete(favorite)
+
+        self.session.delete(product)
+        self.session.commit()
+        return True

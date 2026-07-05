@@ -9,11 +9,13 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { useAdvisorWidget } from "@/contexts/AdvisorWidgetContext"
 
 export type Item = {
   icon: LucideIcon
   title: string
-  path: string
+  path?: string
+  action?: "open-advisor"
 }
 
 interface MainProps {
@@ -24,6 +26,7 @@ export function Main({ items }: MainProps) {
   const { isMobile, setOpenMobile } = useSidebar()
   const router = useRouterState()
   const currentPath = router.location.pathname
+  const { open: openAdvisor } = useAdvisorWidget()
 
   const handleMenuClick = () => {
     if (isMobile) {
@@ -36,7 +39,24 @@ export function Main({ items }: MainProps) {
       <SidebarGroupContent>
         <SidebarMenu>
           {items.map((item) => {
-            const isActive = currentPath === item.path
+            if (item.action === "open-advisor") {
+              return (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton
+                    tooltip={item.title}
+                    onClick={() => {
+                      openAdvisor()
+                      handleMenuClick()
+                    }}
+                  >
+                    <item.icon />
+                    <span>{item.title}</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )
+            }
+
+            const isActive = item.path != null && currentPath === item.path
 
             return (
               <SidebarMenuItem key={item.title}>
@@ -45,7 +65,7 @@ export function Main({ items }: MainProps) {
                   isActive={isActive}
                   asChild
                 >
-                  <RouterLink to={item.path} onClick={handleMenuClick}>
+                  <RouterLink to={item.path!} onClick={handleMenuClick}>
                     <item.icon />
                     <span>{item.title}</span>
                   </RouterLink>

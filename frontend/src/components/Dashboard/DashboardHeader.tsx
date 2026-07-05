@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router"
-import { Heart, Settings, Shield } from "lucide-react"
+import { Heart, Settings, Shield, Sparkles } from "lucide-react"
 
 import { Appearance } from "@/components/Common/Appearance"
 import { Logo } from "@/components/Common/Logo"
@@ -9,23 +9,43 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { useAdvisorWidget } from "@/contexts/AdvisorWidgetContext"
 import useAuth, { isLoggedIn } from "@/hooks/useAuth"
 
 export function DashboardHeader() {
   const { user, logout } = useAuth()
   const loggedIn = isLoggedIn()
+  const { open: openAdvisor } = useAdvisorWidget()
 
   return (
     <header className="sticky top-0 z-20 border-b bg-background/80 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 md:px-8">
-        <Logo variant="responsive" />
-        <div className="flex items-center gap-2">
+        <div className="flex min-w-0 items-center gap-3">
+          <Logo variant="responsive" />
+          {loggedIn && (
+            <span className="hidden truncate text-sm text-muted-foreground sm:inline">
+              Hola, {user?.full_name || user?.email}
+            </span>
+          )}
+        </div>
+        <div className="flex shrink-0 items-center gap-2">
           <Appearance />
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                type="button"
+                size="icon"
+                variant="outline"
+                aria-label="Asesor IA"
+                onClick={openAdvisor}
+              >
+                <Sparkles />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Asesor IA</TooltipContent>
+          </Tooltip>
           {loggedIn ? (
             <>
-              <span className="hidden truncate text-sm text-muted-foreground sm:inline">
-                Hola, {user?.full_name || user?.email}
-              </span>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button asChild size="icon" variant="outline">
