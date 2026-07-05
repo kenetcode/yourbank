@@ -471,6 +471,70 @@ export const PrivateUserCreateSchema = {
     title: 'PrivateUserCreate'
 } as const;
 
+export const ProductDataSchema = {
+    properties: {
+        nombre_producto: {
+            type: 'string',
+            title: 'Nombre Producto'
+        },
+        banco: {
+            type: 'string',
+            title: 'Banco'
+        },
+        tipo_producto: {
+            type: 'string',
+            enum: ['credit_card', 'debit_card', 'loan', 'savings', 'insurance'],
+            title: 'Tipo Producto'
+        },
+        anualidad: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Anualidad'
+        },
+        tasa_interes: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Tasa Interes'
+        },
+        requisitos: {
+            items: {
+                type: 'string'
+            },
+            type: 'array',
+            title: 'Requisitos'
+        },
+        beneficios: {
+            items: {
+                type: 'string'
+            },
+            type: 'array',
+            title: 'Beneficios'
+        },
+        promociones: {
+            items: {
+                '$ref': '#/components/schemas/Promocion'
+            },
+            type: 'array',
+            title: 'Promociones'
+        }
+    },
+    type: 'object',
+    required: ['nombre_producto', 'banco', 'tipo_producto'],
+    title: 'ProductData'
+} as const;
+
 export const ProductPublicSchema = {
     properties: {
         id: {
@@ -550,6 +614,68 @@ export const ProductsPublicSchema = {
     type: 'object',
     required: ['data', 'count', 'disclaimer'],
     title: 'ProductsPublic'
+} as const;
+
+export const PromocionSchema = {
+    properties: {
+        comercio: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Comercio'
+        },
+        descuento_pct: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Descuento Pct'
+        },
+        tipo_tarjeta: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Tipo Tarjeta'
+        },
+        vigencia: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Vigencia'
+        },
+        descripcion: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Descripcion'
+        }
+    },
+    type: 'object',
+    title: 'Promocion'
 } as const;
 
 export const TokenSchema = {
@@ -903,4 +1029,36 @@ export const ValidationErrorSchema = {
     type: 'object',
     required: ['loc', 'msg', 'type'],
     title: 'ValidationError'
+} as const;
+
+export const WebhookIngestRequestSchema = {
+    properties: {
+        bank_slug: {
+            type: 'string',
+            title: 'Bank Slug'
+        },
+        source_url: {
+            type: 'string',
+            title: 'Source Url'
+        },
+        product: {
+            '$ref': '#/components/schemas/ProductData'
+        },
+        raw: {
+            anyOf: [
+                {
+                    additionalProperties: true,
+                    type: 'object'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Raw'
+        }
+    },
+    type: 'object',
+    required: ['bank_slug', 'source_url', 'product'],
+    title: 'WebhookIngestRequest',
+    description: 'Payload que envía n8n (scraping externo con Firecrawl) al webhook de ingesta.'
 } as const;

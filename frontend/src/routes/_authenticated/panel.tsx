@@ -2,12 +2,12 @@ import { createFileRoute } from "@tanstack/react-router"
 
 import useAuth from "@/hooks/useAuth"
 
-export const Route = createFileRoute("/_layout/")({
+export const Route = createFileRoute("/_authenticated/panel")({
   component: Dashboard,
   head: () => ({
     meta: [
       {
-        title: "Dashboard - FastAPI Cloud",
+        title: "Panel - YourBank",
       },
     ],
   }),
@@ -20,10 +20,10 @@ function Dashboard() {
     <div>
       <div>
         <h1 className="text-2xl truncate max-w-sm">
-          Hi, {currentUser?.full_name || currentUser?.email} 👋
+          Hola, {currentUser?.full_name || currentUser?.email} 👋
         </h1>
         <p className="text-muted-foreground">
-          Welcome back, nice to see you again!!!
+          Bienvenido de nuevo, ¡qué gusto verte otra vez!
         </p>
       </div>
     </div>

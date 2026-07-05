@@ -99,6 +99,19 @@ export type PrivateUserCreate = {
     is_verified?: boolean;
 };
 
+export type ProductData = {
+    nombre_producto: string;
+    banco: string;
+    tipo_producto: 'credit_card' | 'debit_card' | 'loan' | 'savings' | 'insurance';
+    anualidad?: (number | null);
+    tasa_interes?: (number | null);
+    requisitos?: Array<(string)>;
+    beneficios?: Array<(string)>;
+    promociones?: Array<Promocion>;
+};
+
+export type tipo_producto = 'credit_card' | 'debit_card' | 'loan' | 'savings' | 'insurance';
+
 export type ProductPublic = {
     id: string;
     nombre_producto: string;
@@ -112,12 +125,18 @@ export type ProductPublic = {
     disclaimer: string;
 };
 
-export type tipo_producto = 'credit_card' | 'debit_card' | 'loan' | 'savings' | 'insurance';
-
 export type ProductsPublic = {
     data: Array<ProductPublic>;
     count: number;
     disclaimer: string;
+};
+
+export type Promocion = {
+    comercio?: (string | null);
+    descuento_pct?: (number | null);
+    tipo_tarjeta?: (string | null);
+    vigencia?: (string | null);
+    descripcion?: (string | null);
 };
 
 export type Token = {
@@ -184,6 +203,18 @@ export type ValidationError = {
     type: string;
 };
 
+/**
+ * Payload que envía n8n (scraping externo con Firecrawl) al webhook de ingesta.
+ */
+export type WebhookIngestRequest = {
+    bank_slug: string;
+    source_url: string;
+    product: ProductData;
+    raw?: ({
+    [key: string]: unknown;
+} | null);
+};
+
 export type AdminIngestRunDiscoverData = {
     bankSlug: string;
 };
@@ -201,6 +232,15 @@ export type AdminIngestRunExtractResponse = ({
     [key: string]: unknown;
 });
 
+export type AdminIngestRunWebhookIngestData = {
+    requestBody: WebhookIngestRequest;
+    xIngestApiKey?: (string | null);
+};
+
+export type AdminIngestRunWebhookIngestResponse = ({
+    [key: string]: unknown;
+});
+
 export type AdvisorAdvisorMatchData = {
     requestBody: MatchRequest;
 };
@@ -212,6 +252,20 @@ export type AdvisorAdvisorChatData = {
 };
 
 export type AdvisorAdvisorChatResponse = (ChatResponse);
+
+export type FavoritesListMyFavoritesResponse = (ProductsPublic);
+
+export type FavoritesAddFavoriteData = {
+    productId: string;
+};
+
+export type FavoritesAddFavoriteResponse = (ProductPublic);
+
+export type FavoritesRemoveFavoriteData = {
+    productId: string;
+};
+
+export type FavoritesRemoveFavoriteResponse = (void);
 
 export type ItemsReadItemsData = {
     limit?: number;

@@ -16,20 +16,20 @@ function getUsersQueryOptions() {
   }
 }
 
-export const Route = createFileRoute("/_layout/admin")({
+export const Route = createFileRoute("/_authenticated/admin")({
   component: Admin,
   beforeLoad: async () => {
     const user = await UsersService.readUserMe()
     if (!user.is_superuser) {
       throw redirect({
-        to: "/",
+        to: "/panel",
       })
     }
   },
   head: () => ({
     meta: [
       {
-        title: "Admin - FastAPI Cloud",
+        title: "Admin - YourBank",
       },
     ],
   }),

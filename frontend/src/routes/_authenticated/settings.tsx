@@ -12,12 +12,12 @@ const tabsConfig = [
   { value: "danger-zone", title: "Danger zone", component: DeleteAccount },
 ]
 
-export const Route = createFileRoute("/_layout/settings")({
+export const Route = createFileRoute("/_authenticated/settings")({
   component: UserSettings,
   head: () => ({
     meta: [
       {
-        title: "Settings - FastAPI Cloud",
+        title: "Settings - YourBank",
       },
     ],
   }),

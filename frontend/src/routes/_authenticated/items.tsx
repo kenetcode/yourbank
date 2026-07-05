@@ -16,12 +16,12 @@ function getItemsQueryOptions() {
   }
 }
 
-export const Route = createFileRoute("/_layout/items")({
+export const Route = createFileRoute("/_authenticated/items")({
   component: Items,
   head: () => ({
     meta: [
       {
-        title: "Items - FastAPI Cloud",
+        title: "Items - YourBank",
       },
     ],
   }),

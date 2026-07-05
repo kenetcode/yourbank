@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { AdminIngestRunDiscoverData, AdminIngestRunDiscoverResponse, AdminIngestRunExtractData, AdminIngestRunExtractResponse, AdvisorAdvisorMatchData, AdvisorAdvisorMatchResponse, AdvisorAdvisorChatData, AdvisorAdvisorChatResponse, ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, PrivateCreateUserData, PrivateCreateUserResponse, ProductsListProductsData, ProductsListProductsResponse, ProductsGetProductData, ProductsGetProductResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdateFinancialProfileMeData, UsersUpdateFinancialProfileMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse, UtilsGetDisclaimerResponse } from './types.gen';
+import type { AdminIngestRunDiscoverData, AdminIngestRunDiscoverResponse, AdminIngestRunExtractData, AdminIngestRunExtractResponse, AdminIngestRunWebhookIngestData, AdminIngestRunWebhookIngestResponse, AdvisorAdvisorMatchData, AdvisorAdvisorMatchResponse, AdvisorAdvisorChatData, AdvisorAdvisorChatResponse, FavoritesListMyFavoritesResponse, FavoritesAddFavoriteData, FavoritesAddFavoriteResponse, FavoritesRemoveFavoriteData, FavoritesRemoveFavoriteResponse, ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, PrivateCreateUserData, PrivateCreateUserResponse, ProductsListProductsData, ProductsListProductsResponse, ProductsGetProductData, ProductsGetProductResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdateFinancialProfileMeData, UsersUpdateFinancialProfileMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse, UtilsGetDisclaimerResponse } from './types.gen';
 
 export class AdminIngestService {
     /**
@@ -49,6 +49,29 @@ export class AdminIngestService {
             }
         });
     }
+    
+    /**
+     * Run Webhook Ingest
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @param data.xIngestApiKey
+     * @returns unknown Successful Response
+     * @throws ApiError
+     */
+    public static runWebhookIngest(data: AdminIngestRunWebhookIngestData): CancelablePromise<AdminIngestRunWebhookIngestResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/admin/ingest/webhook',
+            headers: {
+                'X-Ingest-Api-Key': data.xIngestApiKey
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
 }
 
 export class AdvisorService {
@@ -84,6 +107,67 @@ export class AdvisorService {
             url: '/api/v1/advisor/chat',
             body: data.requestBody,
             mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
+
+export class FavoritesService {
+    /**
+     * List My Favorites
+     * Lista los productos marcados como favoritos por el usuario actual.
+     * @returns ProductsPublic Successful Response
+     * @throws ApiError
+     */
+    public static listMyFavorites(): CancelablePromise<FavoritesListMyFavoritesResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/users/me/favorites/'
+        });
+    }
+    
+    /**
+     * Add Favorite
+     * Marca un producto como favorito del usuario actual.
+     *
+     * Es idempotente: si ya era favorito, no falla ni lo duplica.
+     * @param data The data for the request.
+     * @param data.productId
+     * @returns ProductPublic Successful Response
+     * @throws ApiError
+     */
+    public static addFavorite(data: FavoritesAddFavoriteData): CancelablePromise<FavoritesAddFavoriteResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/users/me/favorites/{product_id}',
+            path: {
+                product_id: data.productId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Remove Favorite
+     * Quita un producto de los favoritos del usuario actual.
+     *
+     * Es idempotente: si no existía, igual responde 204.
+     * @param data The data for the request.
+     * @param data.productId
+     * @returns void Successful Response
+     * @throws ApiError
+     */
+    public static removeFavorite(data: FavoritesRemoveFavoriteData): CancelablePromise<FavoritesRemoveFavoriteResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/users/me/favorites/{product_id}',
+            path: {
+                product_id: data.productId
+            },
             errors: {
                 422: 'Validation Error'
             }

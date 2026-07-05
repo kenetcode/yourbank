@@ -138,4 +138,10 @@ class NewPassword(SQLModel):
     new_password: str = Field(min_length=8, max_length=128)
 
 
-from app.banking_models import Bank, Product, ProductUrl, ScrapeJob  # noqa: E402, F401
+from app.banking_models import (  # noqa: E402, F401
+    Bank,
+    Product,
+    ProductUrl,
+    ScrapeJob,
+    UserFavorite,
+)

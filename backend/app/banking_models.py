@@ -101,3 +101,18 @@ class Product(SQLModel, table=True):
     bank: Bank | None = Relationship(back_populates="products")
     product_url: ProductUrl | None = Relationship(back_populates="products")
     scrape_job: ScrapeJob | None = Relationship(back_populates="products")
+
+
+class UserFavorite(SQLModel, table=True):
+    __tablename__ = "user_favorite"
+    __table_args__ = (
+        UniqueConstraint("user_id", "product_id", name="uq_user_favorite_user_product"),
+    )
+
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    user_id: uuid.UUID = Field(foreign_key="user.id", nullable=False, index=True)
+    product_id: uuid.UUID = Field(foreign_key="product.id", nullable=False, index=True)
+    created_at: datetime | None = Field(
+        default_factory=get_datetime_utc,
+        sa_type=DateTime(timezone=True),  # type: ignore
+    )
