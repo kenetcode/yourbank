@@ -1,0 +1,80 @@
+banks:
+  banco-cuscatlan:
+    name: Banco Cuscatlán
+    domain: bancocuscatlan.com
+    exclude_patterns:
+      - /guia-digital/
+      - /blog/
+      - /assets/
+      - /empresa
+      - tasas-y-comisiones
+      - productos-digitales
+      - utm_
+      - solicitudes/
+    listings:
+      - url: https://www.bancocuscatlan.com/tarjetas/de-credito
+        product_type: credit_card
+        url_patterns:
+          - /tarjetas/de-credito/
+          - /tarjetaya
+      - url: https://www.bancocuscatlan.com/tarjetas/debito
+        product_type: debit_card
+        url_patterns:
+          - /tarjetas/debito/
+      - url: https://www.bancocuscatlan.com/tarjetas/promociones
+        product_type: promotion
+        url_patterns:
+          - /tarjetas/promociones/
+      - url: https://www.bancocuscatlan.com/creditos
+        product_type: loan
+        url_patterns:
+          - /creditos/
+      - url: https://www.bancocuscatlan.com/seguros
+        product_type: insurance
+        url_patterns:
+          - /seguros/
+  banco-agricola:
+    name: Banco Agrícola
+    domain: bancoagricola.com
+    exclude_patterns:
+      - /multimedia/
+      - /blog/
+      - /assets/
+      - /pyme
+      - empresas-y-gobierno
+      - preguntas-frecuentes
+      - salud-financiera
+      - banca-movil
+      - tasas-y-comisiones
+      - utm_
+      - solicitudes/
+      - sitemap.xml
+      - celebra-navidad
+    listings:
+      - url: https://www.bancoagricola.com/tarjetas-de-credito
+        product_type: credit_card
+        url_patterns:
+          - tarjeta-credito-
+          - tarjeta-mastercard-
+      - url: https://www.bancoagricola.com/tarjetas-de-debito
+        product_type: debit_card
+        url_patterns:
+          - tarjeta-debito
+          - sticker-debito
+          - pulsera-debito
+          - debito-digital
+      - url: https://www.bancoagricola.com/creditos-personas
+        product_type: loan
+        url_patterns:
+          - credito-personal
+          - credito-vivienda
+          - credito-vehiculo
+          - credito-estudio
+          - credicheque
+          - extrafinanciamiento
+          - sobregiro
+          - adelanto-de-salario
+      - url: https://www.bancoagricola.com/seguros
+        product_type: insurance
+        url_patterns:
+          - seguro-

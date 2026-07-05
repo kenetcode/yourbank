@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 from pydantic.networks import EmailStr
 
 from app.api.deps import get_current_active_superuser
+from app.core.disclaimer import LEGAL_DISCLAIMER
 from app.models import Message
 from app.utils import generate_test_email, send_email
 
@@ -27,5 +28,10 @@ def test_email(email_to: EmailStr) -> Message:
 
 
 @router.get("/health-check/")
-async def health_check() -> bool:
-    return True
+async def health_check() -> dict[str, bool | str]:
+    return {"ok": True, "disclaimer": LEGAL_DISCLAIMER}
+
+
+@router.get("/disclaimer/")
+async def get_disclaimer() -> Message:
+    return Message(message=LEGAL_DISCLAIMER)

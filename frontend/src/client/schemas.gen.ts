@@ -57,6 +57,137 @@ export const Body_login_login_access_tokenSchema = {
     title: 'Body_login-login_access_token'
 } as const;
 
+export const ChatMessageSchema = {
+    properties: {
+        role: {
+            type: 'string',
+            enum: ['user', 'assistant'],
+            title: 'Role'
+        },
+        content: {
+            type: 'string',
+            title: 'Content'
+        }
+    },
+    type: 'object',
+    required: ['role', 'content'],
+    title: 'ChatMessage'
+} as const;
+
+export const ChatRequestSchema = {
+    properties: {
+        message: {
+            type: 'string',
+            maxLength: 4000,
+            minLength: 1,
+            title: 'Message'
+        },
+        profile: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/UserProfileInput'
+                },
+                {
+                    type: 'null'
+                }
+            ]
+        },
+        history: {
+            items: {
+                '$ref': '#/components/schemas/ChatMessage'
+            },
+            type: 'array',
+            title: 'History'
+        }
+    },
+    type: 'object',
+    required: ['message'],
+    title: 'ChatRequest'
+} as const;
+
+export const ChatResponseSchema = {
+    properties: {
+        reply: {
+            type: 'string',
+            title: 'Reply'
+        },
+        products_used: {
+            items: {
+                type: 'string'
+            },
+            type: 'array',
+            title: 'Products Used'
+        },
+        match_scores: {
+            items: {
+                '$ref': '#/components/schemas/MatchResultItem'
+            },
+            type: 'array',
+            title: 'Match Scores'
+        },
+        disclaimer: {
+            type: 'string',
+            title: 'Disclaimer'
+        }
+    },
+    type: 'object',
+    required: ['reply', 'products_used', 'disclaimer'],
+    title: 'ChatResponse'
+} as const;
+
+export const FinancialProfileUpdateSchema = {
+    properties: {
+        monthly_income: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Monthly Income'
+        },
+        goal: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Goal'
+        },
+        has_credit_history: {
+            anyOf: [
+                {
+                    type: 'boolean'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Has Credit History'
+        },
+        employment: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 32
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Employment'
+        }
+    },
+    type: 'object',
+    title: 'FinancialProfileUpdate'
+} as const;
+
 export const HTTPValidationErrorSchema = {
     properties: {
         detail: {
@@ -196,6 +327,95 @@ export const ItemsPublicSchema = {
     title: 'ItemsPublic'
 } as const;
 
+export const MatchRequestSchema = {
+    properties: {
+        profile: {
+            '$ref': '#/components/schemas/UserProfileInput'
+        },
+        product_types: {
+            anyOf: [
+                {
+                    items: {
+                        type: 'string',
+                        enum: ['credit_card', 'debit_card', 'loan', 'savings', 'insurance']
+                    },
+                    type: 'array'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Product Types'
+        },
+        limit: {
+            type: 'integer',
+            maximum: 50,
+            minimum: 1,
+            title: 'Limit',
+            default: 10
+        }
+    },
+    type: 'object',
+    required: ['profile'],
+    title: 'MatchRequest'
+} as const;
+
+export const MatchResponseSchema = {
+    properties: {
+        results: {
+            items: {
+                '$ref': '#/components/schemas/MatchResultItem'
+            },
+            type: 'array',
+            title: 'Results'
+        },
+        disclaimer: {
+            type: 'string',
+            title: 'Disclaimer'
+        }
+    },
+    type: 'object',
+    required: ['results', 'disclaimer'],
+    title: 'MatchResponse'
+} as const;
+
+export const MatchResultItemSchema = {
+    properties: {
+        product_id: {
+            type: 'string',
+            title: 'Product Id'
+        },
+        nombre_producto: {
+            type: 'string',
+            title: 'Nombre Producto'
+        },
+        banco: {
+            type: 'string',
+            title: 'Banco'
+        },
+        tipo_producto: {
+            type: 'string',
+            title: 'Tipo Producto'
+        },
+        score: {
+            type: 'integer',
+            maximum: 100,
+            minimum: 0,
+            title: 'Score'
+        },
+        reasons: {
+            items: {
+                type: 'string'
+            },
+            type: 'array',
+            title: 'Reasons'
+        }
+    },
+    type: 'object',
+    required: ['product_id', 'nombre_producto', 'banco', 'tipo_producto', 'score', 'reasons'],
+    title: 'MatchResultItem'
+} as const;
+
 export const MessageSchema = {
     properties: {
         message: {
@@ -249,6 +469,87 @@ export const PrivateUserCreateSchema = {
     type: 'object',
     required: ['email', 'password', 'full_name'],
     title: 'PrivateUserCreate'
+} as const;
+
+export const ProductPublicSchema = {
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        nombre_producto: {
+            type: 'string',
+            title: 'Nombre Producto'
+        },
+        banco: {
+            type: 'string',
+            title: 'Banco'
+        },
+        tipo_producto: {
+            type: 'string',
+            enum: ['credit_card', 'debit_card', 'loan', 'savings', 'insurance'],
+            title: 'Tipo Producto'
+        },
+        source_url: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Source Url'
+        },
+        normalized: {
+            additionalProperties: true,
+            type: 'object',
+            title: 'Normalized'
+        },
+        last_updated: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Last Updated'
+        },
+        disclaimer: {
+            type: 'string',
+            title: 'Disclaimer'
+        }
+    },
+    type: 'object',
+    required: ['id', 'nombre_producto', 'banco', 'tipo_producto', 'normalized', 'disclaimer'],
+    title: 'ProductPublic'
+} as const;
+
+export const ProductsPublicSchema = {
+    properties: {
+        data: {
+            items: {
+                '$ref': '#/components/schemas/ProductPublic'
+            },
+            type: 'array',
+            title: 'Data'
+        },
+        count: {
+            type: 'integer',
+            title: 'Count'
+        },
+        disclaimer: {
+            type: 'string',
+            title: 'Disclaimer'
+        }
+    },
+    type: 'object',
+    required: ['data', 'count', 'disclaimer'],
+    title: 'ProductsPublic'
 } as const;
 
 export const TokenSchema = {
@@ -328,6 +629,59 @@ export const UserCreateSchema = {
     type: 'object',
     required: ['email', 'password'],
     title: 'UserCreate'
+} as const;
+
+export const UserProfileInputSchema = {
+    properties: {
+        monthly_income: {
+            anyOf: [
+                {
+                    type: 'number',
+                    minimum: 0
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Monthly Income'
+        },
+        goal: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Goal'
+        },
+        has_credit_history: {
+            anyOf: [
+                {
+                    type: 'boolean'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Has Credit History'
+        },
+        employment: {
+            anyOf: [
+                {
+                    type: 'string',
+                    enum: ['formal', 'informal']
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Employment'
+        }
+    },
+    type: 'object',
+    title: 'UserProfileInput'
 } as const;
 
 export const UserPublicSchema = {

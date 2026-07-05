@@ -3,7 +3,93 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, PrivateCreateUserData, PrivateCreateUserResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
+import type { AdminIngestRunDiscoverData, AdminIngestRunDiscoverResponse, AdminIngestRunExtractData, AdminIngestRunExtractResponse, AdvisorAdvisorMatchData, AdvisorAdvisorMatchResponse, AdvisorAdvisorChatData, AdvisorAdvisorChatResponse, ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, PrivateCreateUserData, PrivateCreateUserResponse, ProductsListProductsData, ProductsListProductsResponse, ProductsGetProductData, ProductsGetProductResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdateFinancialProfileMeData, UsersUpdateFinancialProfileMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse, UtilsGetDisclaimerResponse } from './types.gen';
+
+export class AdminIngestService {
+    /**
+     * Run Discover
+     * @param data The data for the request.
+     * @param data.bankSlug
+     * @returns unknown Successful Response
+     * @throws ApiError
+     */
+    public static runDiscover(data: AdminIngestRunDiscoverData): CancelablePromise<AdminIngestRunDiscoverResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/admin/ingest/{bank_slug}/discover',
+            path: {
+                bank_slug: data.bankSlug
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Run Extract
+     * @param data The data for the request.
+     * @param data.bankSlug
+     * @param data.limit
+     * @returns unknown Successful Response
+     * @throws ApiError
+     */
+    public static runExtract(data: AdminIngestRunExtractData): CancelablePromise<AdminIngestRunExtractResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/admin/ingest/{bank_slug}/extract',
+            path: {
+                bank_slug: data.bankSlug
+            },
+            query: {
+                limit: data.limit
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
+
+export class AdvisorService {
+    /**
+     * Advisor Match
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns MatchResponse Successful Response
+     * @throws ApiError
+     */
+    public static advisorMatch(data: AdvisorAdvisorMatchData): CancelablePromise<AdvisorAdvisorMatchResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/advisor/match',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Advisor Chat
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns ChatResponse Successful Response
+     * @throws ApiError
+     */
+    public static advisorChat(data: AdvisorAdvisorChatData): CancelablePromise<AdvisorAdvisorChatResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/advisor/chat',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
 
 export class ItemsService {
     /**
@@ -235,6 +321,54 @@ export class PrivateService {
     }
 }
 
+export class ProductsService {
+    /**
+     * List Products
+     * @param data The data for the request.
+     * @param data.skip
+     * @param data.limit
+     * @param data.tipoProducto
+     * @param data.banco
+     * @returns ProductsPublic Successful Response
+     * @throws ApiError
+     */
+    public static listProducts(data: ProductsListProductsData = {}): CancelablePromise<ProductsListProductsResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/products/',
+            query: {
+                skip: data.skip,
+                limit: data.limit,
+                tipo_producto: data.tipoProducto,
+                banco: data.banco
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Get Product
+     * @param data The data for the request.
+     * @param data.productId
+     * @returns ProductPublic Successful Response
+     * @throws ApiError
+     */
+    public static getProduct(data: ProductsGetProductData): CancelablePromise<ProductsGetProductResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/products/{product_id}',
+            path: {
+                product_id: data.productId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
+
 export class UsersService {
     /**
      * Read Users
@@ -317,6 +451,26 @@ export class UsersService {
         return __request(OpenAPI, {
             method: 'PATCH',
             url: '/api/v1/users/me',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Update Financial Profile Me
+     * Update own financial profile for advisor personalization.
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns Message Successful Response
+     * @throws ApiError
+     */
+    public static updateFinancialProfileMe(data: UsersUpdateFinancialProfileMeData): CancelablePromise<UsersUpdateFinancialProfileMeResponse> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/api/v1/users/me/profile',
             body: data.requestBody,
             mediaType: 'application/json',
             errors: {
@@ -456,13 +610,25 @@ export class UtilsService {
     
     /**
      * Health Check
-     * @returns boolean Successful Response
+     * @returns unknown Successful Response
      * @throws ApiError
      */
     public static healthCheck(): CancelablePromise<UtilsHealthCheckResponse> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/utils/health-check/'
+        });
+    }
+    
+    /**
+     * Get Disclaimer
+     * @returns Message Successful Response
+     * @throws ApiError
+     */
+    public static getDisclaimer(): CancelablePromise<UtilsGetDisclaimerResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/utils/disclaimer/'
         });
     }
 }

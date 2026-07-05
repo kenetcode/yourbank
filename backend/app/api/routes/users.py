@@ -13,6 +13,7 @@ from app.api.deps import (
 from app.core.config import settings
 from app.core.security import get_password_hash, verify_password
 from app.models import (
+    FinancialProfileUpdate,
     Item,
     Message,
     UpdatePassword,
@@ -95,6 +96,22 @@ def update_user_me(
     session.commit()
     session.refresh(current_user)
     return current_user
+
+
+@router.put("/me/profile", response_model=Message)
+def update_financial_profile_me(
+    *,
+    session: SessionDep,
+    profile_in: FinancialProfileUpdate,
+    current_user: CurrentUser,
+) -> Any:
+    """
+    Update own financial profile for advisor personalization.
+    """
+    current_user.financial_profile = profile_in.model_dump(exclude_none=True)
+    session.add(current_user)
+    session.commit()
+    return Message(message="Financial profile updated successfully")
 
 
 @router.patch("/me/password", response_model=Message)

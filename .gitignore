@@ -9,3 +9,6 @@ node_modules/
 .env
 .copier/
 /venv
+.firecrawl/
+backend/app/data/scrapes/
+test.txt 
